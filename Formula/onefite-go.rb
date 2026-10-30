@@ -7,16 +7,16 @@
 class OnefiteGo < Formula
   desc "OneFit-Engine non-linear fitting CLI (OFE-Go)"
   homepage "https://github.com/fitteia/OneFit-Engine-Releases"
-  version "0.5.4"
+  version "0.5.5"
   license "Artistic-2.0"
 
   on_arm do
-    url "https://github.com/fitteia/OneFit-Engine-Releases/releases/download/suite-0.5.4/onefite-go-0.5.4-darwin-arm64.tar.gz"
-    sha256 "0e0c8085ef84c54f21d51bad9d8b6dacfc0683103f69c1f60ddf3e077384f1d5"
+    url "https://github.com/fitteia/OneFit-Engine-Releases/releases/download/suite-0.5.5/onefite-go-0.5.5-darwin-arm64.tar.gz"
+    sha256 "96422b990ec81e0354fcf3a9ac64c72e2d9c27c6a0a7bb67b30b0fdbc61310a2"
   end
   on_intel do
-    url "https://github.com/fitteia/OneFit-Engine-Releases/releases/download/suite-0.5.4/onefite-go-0.5.4-darwin-amd64.tar.gz"
-    sha256 "a223e7801aefae225337a9b848e4bd6c2bd26a48183d45d89a622c8a033c4760"
+    url "https://github.com/fitteia/OneFit-Engine-Releases/releases/download/suite-0.5.5/onefite-go-0.5.5-darwin-amd64.tar.gz"
+    sha256 "161b6e378bb1ee5ac7929d07dee98378c4a8f9ffa7f159fde6b8fa0546e20ffc"
   end
 
   depends_on "gcc"
