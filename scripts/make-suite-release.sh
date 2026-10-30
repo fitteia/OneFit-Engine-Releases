@@ -6,8 +6,8 @@
 #
 #   e.g. scripts/make-suite-release.sh suite-0.4.0 v0.4.0 v0.4.0 v1.2.0 1.1.0
 #
-# It fetches into build/SUITE/ (a file already there is kept, so one built
-# by hand can stand in for a missing release asset):
+# It fetches into build/SUITE/ (a file already there is not fetched again,
+# but is still checked, so it must be the release asset itself):
 #   from fitteia/OneFit-Engine-go   (private: gh must be logged in with access)
 #     onefite-go_V_amd64.deb, onefite-go_V_arm64.deb
 #     onefite-go-V-darwin-arm64.tar.gz, onefite-go-V-darwin-amd64.tar.gz
@@ -16,10 +16,13 @@
 #     onefite-gui-V-OS-ARCH.zip (six), onefite-go-gui-V-darwin-ARCH.tar.gz (two)
 #   from fitteia/OneFit-Engine-plot (public)
 #     plot-go-V-OS-ARCH.zip (six)
-# checks the zips against their release's SHA256SUMS, writes SHA256SUMS and
-# the release notes, and sets Formula/*.rb to this suite's archives (url,
-# sha256, version). --publish then creates the GitHub release SUITE here
-# (or adds the files to it, if it exists); commit and push Formula/ after.
+# checks every file against the SHA-256 digest GitHub records for its
+# release asset (and the zips also against their release's SHA256SUMS),
+# writes SHA256SUMS and the release notes, and sets Formula/*.rb to this
+# suite's archives (url, sha256, version). Commit and push Formula/, then
+# --publish creates the GitHub release SUITE here with its tag at that
+# commit, so the tag holds this suite's formulas (it refuses to run while
+# Formula/ is uncommitted or HEAD is not origin/main).
 # Runs on macOS (bash 3.2, BSD tools) and Linux.
 set -euo pipefail
 
@@ -59,6 +62,24 @@ fetch() {
     fi
   done
 }
+# digests REPO TAG FILE...: FILE against the SHA-256 digest GitHub records
+# for that asset of REPO's TAG release (every component; OFE-Go has no
+# SHA256SUMS of its own)
+digests() {
+  repo="$1" tag="$2"; shift 2
+  list="$(mktemp)"
+  gh api "repos/$repo/releases/tags/$tag" --jq '.assets[] | "\(.digest) \(.name)"' > "$list"
+  for f in "$@"; do
+    want="$(awk -v f="$f" '$2 == f {print $1}' "$list")"
+    case "$want" in
+      sha256:*) ;;
+      *) echo "$f: $repo $tag has no SHA-256 digest for it" >&2; rm -f "$list"; exit 1 ;;
+    esac
+    [ "sha256:$(sha256 "$stage/$f")" = "$want" ] || { echo "$f does not match its digest on $repo $tag" >&2; rm -f "$list"; exit 1; }
+  done
+  rm -f "$list"
+  echo "    $repo $tag: GitHub asset digests match"
+}
 # verify REPO TAG FILE...: FILE against REPO's TAG release SHA256SUMS
 verify() {
   repo="$1" tag="$2"; shift 2
@@ -80,6 +101,12 @@ fetch "$go_repo" "$go_tag" $go_files
 fetch "$gui_repo" "$gui_tag" $gui_files
 # shellcheck disable=SC2086
 fetch "$plot_repo" "$plot_tag" $plot_files
+# shellcheck disable=SC2086
+digests "$go_repo" "$go_tag" $go_files
+# shellcheck disable=SC2086
+digests "$gui_repo" "$gui_tag" $gui_files
+# shellcheck disable=SC2086
+digests "$plot_repo" "$plot_tag" $plot_files
 # shellcheck disable=SC2086
 verify "$gui_repo" "$gui_tag" $(for p in $platforms; do echo "onefite-gui-$gui_v-$p.zip"; done)
 # shellcheck disable=SC2086
@@ -128,18 +155,37 @@ set_formula Formula/onefite-go-gui.rb onefite-go-gui "$gui_v"
 
 echo "==> Ready: $(echo $all | wc -w | tr -d ' ') files, SHA256SUMS and NOTES.md in $stage"
 if [ -z "$publish" ]; then
-  echo "    Check them, then rerun with --publish."
+  echo "    Check them, commit and push the formulas, then rerun with --publish:"
+  echo "    git add Formula && git commit -m \"Formulas: $suite\" && git push origin main"
   exit 0
 fi
 
-echo "==> Publishing $suite on $here_repo"
+# The release tag must hold this suite's formulas: they have to be
+# committed and on GitHub before the release is created at that commit.
+git diff --quiet HEAD -- Formula || {
+  echo "Formula/ differs from the last commit: commit and push the formulas first:" >&2
+  echo "    git add Formula && git commit -m \"Formulas: $suite\" && git push origin main" >&2
+  exit 1
+}
+git fetch -q origin main
+head="$(git rev-parse HEAD)"
+[ "$head" = "$(git rev-parse origin/main)" ] || {
+  echo "HEAD is not origin/main: push the formula commit (or pull) first" >&2
+  exit 1
+}
+
+echo "==> Publishing $suite on $here_repo at $head"
 # shellcheck disable=SC2086
 if gh release view "$suite" -R "$here_repo" >/dev/null 2>&1; then
   (cd "$stage" && gh release upload "$suite" $all SHA256SUMS --clobber -R "$here_repo")
   gh release edit "$suite" -R "$here_repo" --notes-file "$stage/NOTES.md"
 else
   (cd "$stage" && gh release create "$suite" $all SHA256SUMS -R "$here_repo" \
-    --title "OneFit Engine suite ${suite#suite-}" --notes-file NOTES.md)
+    --target "$head" --title "OneFit Engine suite ${suite#suite-}" --notes-file NOTES.md)
 fi
-echo "==> Published. Now commit and push the formulas:"
-echo "    git add Formula && git commit -m \"Formulas: $suite\" && git push origin main"
+tagged="$(gh api "repos/$here_repo/commits/$suite" --jq .sha)"
+if [ "$tagged" = "$head" ]; then
+  echo "==> Published; tag $suite = $head (with these formulas)."
+else
+  echo "==> Published, but tag $suite is $tagged, not $head: move it to the formula commit." >&2
+fi

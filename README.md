@@ -33,7 +33,7 @@ Download the two `.deb` files for your machine (`dpkg --print-architecture`
 says which), then:
 
 ```sh
-sudo apt install ./onefite-go_0.5.0_arm64.deb ./onefite-go-gui_0.5.0_arm64.deb
+sudo apt install ./onefite-go_0.5.1_arm64.deb ./onefite-go-gui_0.5.1_arm64.deb
 onefite doctor
 ```
 
@@ -104,18 +104,21 @@ keep their own licences; the NOTICE in each package has the details.
   [OneFit-Engine-ext-florence](https://github.com/fitteia/OneFit-Engine-ext-florence), public.
 - **OFE-Go and OFE-GUI: the complete source of every release published here
   is available on request.** Write to pj.sebastiao@gmail.com, naming the
-  release (for example `suite-0.5.0`).
+  release (for example `suite-0.5.1`).
 
 ## Making a release (maintainers)
 
 ```sh
-scripts/make-suite-release.sh suite-0.5.0 v0.5.0 v0.5.0 v1.2.0 1.1.0
-scripts/make-suite-release.sh --publish suite-0.5.0 v0.5.0 v0.5.0 v1.2.0 1.1.0
-git add Formula && git commit -m "Formulas: suite-0.5.0" && git push origin main
+scripts/make-suite-release.sh suite-0.5.1 v0.5.1 v0.5.1 v1.2.0 1.1.0
+git add Formula && git commit -m "Formulas: suite-0.5.1" && git push origin main
+scripts/make-suite-release.sh --publish suite-0.5.1 v0.5.1 v0.5.1 v1.2.0 1.1.0
 ```
 
 The arguments are the suite tag, then the OFE-Go, OFE-GUI, plot-go and
 OFE-Raku versions. The script gathers the files from the components' own
 releases into `build/SUITE/` (`gh` must have access to the private ones),
-checks them, writes `SHA256SUMS` and the release notes, and points the
-formulas at the new archives; `--publish` creates the release.
+checks every file against the digest GitHub records for it, writes
+`SHA256SUMS` and the release notes, and points the formulas at the new
+archives. Once the formulas are committed and pushed, `--publish` creates
+the release with its tag at that commit, so the tag holds the suite's
+formulas.
