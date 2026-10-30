@@ -101,6 +101,10 @@ OneFit Engine suite **${suite#suite-}**:
 
 The engine libraries the OFE-Go packages build on install (OneFit-Engine-C, OneFit-Engine-minuit, OneFit-Engine-ext-florence) are public; the packages carry their pinned sources.
 
+Videos (introduction, remote hosts, fits and batches): [OneFit-Engine-Videos](https://github.com/fitteia/OneFit-Engine-Videos).
+
+**Licences.** Everything in this release is distributed under the Artistic License 2.0. For OFE-Go and OFE-GUI a separate commercial licence is also intended (dual licensing); for that, write to pj.sebastiao@gmail.com. The NOTICE in each package says what applies; third-party components keep their own licences.
+
 How to install on Linux, macOS (Homebrew) and Windows: see the [README](https://github.com/$here_repo#readme). Check downloads against \`SHA256SUMS\`.
 EOF
 

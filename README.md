@@ -7,7 +7,11 @@ browser interface) and **plot-go** (the plots). Every
 the versions it holds; the [latest one](https://github.com/fitteia/OneFit-Engine-Releases/releases/latest)
 is the current suite.
 
-Introduction videos: [OneFit-Engine-Videos](https://github.com/fitteia/OneFit-Engine-Videos).
+Videos (introduction, remote hosts, fits and batches):
+[OneFit-Engine-Videos](https://github.com/fitteia/OneFit-Engine-Videos).
+OFE-Raku, the reference engine, is installed from its own repository,
+[OneFit-Engine](https://github.com/fitteia/OneFit-Engine); each release
+names the OFE-Raku version it goes with.
 
 ## What each release holds
 
@@ -85,6 +89,12 @@ sha256sum -c --ignore-missing SHA256SUMS
 All of the suite is distributed under the Artistic License 2.0 (see
 [LICENSE](LICENSE)); every package and zip carries its licence and the
 licences of the components it contains.
+
+**Commercial licence (OFE-Go and OFE-GUI).** OFE-Go and OFE-GUI are also
+intended to be offered under a separate commercial licence (dual
+licensing); for that, write to pj.sebastiao@gmail.com. The downloads here
+are provided under the Artistic License 2.0, and third-party components
+keep their own licences; the NOTICE in each package has the details.
 
 - plot-go: [OneFit-Engine-plot](https://github.com/fitteia/OneFit-Engine-plot), public.
 - OFE-Raku, the reference engine: [OneFit-Engine](https://github.com/fitteia/OneFit-Engine), public.
