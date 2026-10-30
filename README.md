@@ -90,9 +90,9 @@ All of the suite is distributed under the Artistic License 2.0 (see
 [LICENSE](LICENSE)); every package and zip carries its licence and the
 licences of the components it contains.
 
-**Commercial licence (OFE-Go and OFE-GUI).** OFE-Go and OFE-GUI are also
-intended to be offered under a separate commercial licence (dual
-licensing); for that, write to pj.sebastiao@gmail.com. The downloads here
+**Commercial licence (OFE-Go and OFE-GUI).** A separate commercial
+licence for OFE-Go and OFE-GUI is in preparation (dual licensing); to be
+told when it is available, write to pj.sebastiao@gmail.com. The downloads here
 are provided under the Artistic License 2.0, and third-party components
 keep their own licences; the NOTICE in each package has the details.
 
