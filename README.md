@@ -33,18 +33,19 @@ Download the two `.deb` files for your machine (`dpkg --print-architecture`
 says which), then:
 
 ```sh
-sudo apt install ./onefite-go_0.5.6_arm64.deb ./onefite-go-gui_0.5.6_arm64.deb
+sudo apt install ./onefite-go_0.5.7_arm64.deb ./onefite-go-gui_0.5.7_arm64.deb
 onefite doctor
 ```
 
 The OFE-Go package builds the fitting engine (C and Fortran) on your machine
 while it installs, from the engine sources it carries, so it needs a few
-minutes and installs the compilers it uses. Then start the GUI and open
-<http://127.0.0.1:8143> in a browser:
-
-```sh
-onefite-gui
-```
+minutes and installs the compilers it uses. The GUI package then runs the
+GUI as a service: open <http://127.0.0.1:8143> in a browser. On the first
+install the service runs as the `ofe` account if there is one, else as
+you, in your `~/public_html` (created if missing), and starts with the
+machine. On WSL the service needs systemd; if it is off, the install says
+how to turn it on. `onefite-gui` also starts the GUI by hand, once the
+service is stopped (`sudo systemctl stop onefite-gui`): both use port 8143.
 
 On Windows, install Debian or Ubuntu in WSL (`wsl --install -d Debian` in
 PowerShell) and use these packages inside it.
@@ -104,14 +105,14 @@ keep their own licences; the NOTICE in each package has the details.
   [OneFit-Engine-ext-florence](https://github.com/fitteia/OneFit-Engine-ext-florence), public.
 - **OFE-Go and OFE-GUI: the complete source of every release published here
   is available on request.** Write to pj.sebastiao@gmail.com, naming the
-  release (for example `suite-0.5.6`).
+  release (for example `suite-0.5.7`).
 
 ## Making a release (maintainers)
 
 ```sh
-scripts/make-suite-release.sh suite-0.5.6 v0.5.6 v0.5.6 v1.2.0 1.1.0
-git add Formula && git commit -m "Formulas: suite-0.5.6" && git push origin main
-scripts/make-suite-release.sh --publish suite-0.5.6 v0.5.6 v0.5.6 v1.2.0 1.1.0
+scripts/make-suite-release.sh suite-0.5.7 v0.5.7 v0.5.7 v1.2.0 1.1.0
+git add Formula && git commit -m "Formulas: suite-0.5.7" && git push origin main
+scripts/make-suite-release.sh --publish suite-0.5.7 v0.5.7 v0.5.7 v1.2.0 1.1.0
 ```
 
 The arguments are the suite tag, then the OFE-Go, OFE-GUI, plot-go and
