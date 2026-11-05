@@ -33,7 +33,7 @@ Download the two `.deb` files for your machine (`dpkg --print-architecture`
 says which), then:
 
 ```sh
-sudo apt install ./onefite-go_0.5.9_arm64.deb ./onefite-go-gui_0.5.9_arm64.deb
+sudo apt install ./onefite-go_0.5.10_arm64.deb ./onefite-go-gui_0.5.10_arm64.deb
 onefite doctor
 ```
 
@@ -105,14 +105,14 @@ keep their own licences; the NOTICE in each package has the details.
   [OneFit-Engine-ext-florence](https://github.com/fitteia/OneFit-Engine-ext-florence), public.
 - **OFE-Go and OFE-GUI: the complete source of every release published here
   is available on request.** Write to pj.sebastiao@gmail.com, naming the
-  release (for example `suite-0.5.9`).
+  release (for example `suite-0.5.10`).
 
 ## Making a release (maintainers)
 
 ```sh
-scripts/make-suite-release.sh suite-0.5.9 v0.5.9 v0.5.9 v1.2.1 1.1.2
-git add Formula && git commit -m "Formulas: suite-0.5.9" && git push origin main
-scripts/make-suite-release.sh --publish suite-0.5.9 v0.5.9 v0.5.9 v1.2.1 1.1.2
+scripts/make-suite-release.sh suite-0.5.10 v0.5.10 v0.5.10 v1.2.1 1.1.2
+git add Formula && git commit -m "Formulas: suite-0.5.10" && git push origin main
+scripts/make-suite-release.sh --publish suite-0.5.10 v0.5.10 v0.5.10 v1.2.1 1.1.2
 ```
 
 The arguments are the suite tag, then the OFE-Go, OFE-GUI, plot-go and
