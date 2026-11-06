@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/ofe-logo.svg" alt="OneFit Engine logo" width="128" height="128"></p>
+
 # OneFit Engine releases
 
 Ready-to-install builds of the OneFit Engine suite: **OFE-Go** (`onefite`,
