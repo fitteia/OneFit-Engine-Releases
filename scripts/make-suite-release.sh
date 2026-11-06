@@ -178,7 +178,10 @@ echo "==> Publishing $suite on $here_repo at $head"
 # shellcheck disable=SC2086
 if gh release view "$suite" -R "$here_repo" >/dev/null 2>&1; then
   (cd "$stage" && gh release upload "$suite" $all SHA256SUMS --clobber -R "$here_repo")
-  gh release edit "$suite" -R "$here_repo" --notes-file "$stage/NOTES.md"
+  # an earlier, interrupted run may have left it a draft (untagged): publish
+  # it here, at this commit (--target is ignored once the tag exists)
+  gh release edit "$suite" -R "$here_repo" --notes-file "$stage/NOTES.md" \
+    --target "$head" --draft=false --latest
 else
   (cd "$stage" && gh release create "$suite" $all SHA256SUMS -R "$here_repo" \
     --target "$head" --title "OneFit Engine suite ${suite#suite-}" --notes-file NOTES.md)
