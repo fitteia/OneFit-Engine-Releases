@@ -116,7 +116,11 @@ all="$go_files $gui_files $plot_files"
 # shellcheck disable=SC2086
 (cd "$stage" && for f in $all; do printf '%s  %s\n' "$(sha256 "$f")" "$f"; done) > "$stage/SHA256SUMS"
 
+# the banner, light or dark with the reader's theme (release notes need full addresses)
+art="https://raw.githubusercontent.com/$here_repo/main/assets"
 cat > "$stage/NOTES.md" <<EOF
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="$art/social-preview-dark.png"><img src="$art/social-preview.png" alt="OneFit Engine: OFE-Raku, OFE-Go, OFE-GUI, plot-go" width="640"></picture></p>
+
 OneFit Engine suite **${suite#suite-}**:
 
 | Component | Version | Source |

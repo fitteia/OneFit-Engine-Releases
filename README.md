@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/ofe-logo.svg" alt="OneFit Engine logo" width="128" height="128"></p>
+<p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/social-preview-dark.png"><img src="assets/social-preview.png" alt="OneFit Engine: OFE-Raku, OFE-Go, OFE-GUI, plot-go" width="640"></picture></p>
 
 # OneFit Engine releases
 
