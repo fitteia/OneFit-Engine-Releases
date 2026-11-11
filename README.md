@@ -22,6 +22,7 @@ names the OFE-Raku version it goes with.
 | `onefite-go_VERSION_amd64.deb`, `_arm64.deb` | OFE-Go on Debian, Ubuntu, Raspberry Pi OS and WSL |
 | `onefite-go-gui_VERSION_amd64.deb`, `_arm64.deb` | OFE-GUI on the same systems |
 | `onefite-go-VERSION-darwin-ARCH.tar.gz`, `onefite-go-gui-VERSION-darwin-ARCH.tar.gz` | macOS, installed by the Homebrew formulas in this repository |
+| `onefite-gui-setup-VERSION.exe` | Windows installer: OFE-GUI, plot-go and, optionally, the whole suite in WSL |
 | `onefite-gui-VERSION-OS-ARCH.zip` | OFE-GUI on its own, for Linux, macOS and Windows |
 | `plot-go-VERSION-OS-ARCH.zip` | plot-go on its own, for Linux, macOS and Windows |
 | `SHA256SUMS` | the checksums of all of them |
@@ -35,7 +36,7 @@ Download the two `.deb` files for your machine (`dpkg --print-architecture`
 says which), then:
 
 ```sh
-sudo apt install ./onefite-go_0.5.13_arm64.deb ./onefite-go-gui_0.5.13_arm64.deb
+sudo apt install ./onefite-go_0.5.14_arm64.deb ./onefite-go-gui_0.5.14_arm64.deb
 onefite doctor
 ```
 
@@ -49,8 +50,9 @@ machine. On WSL the service needs systemd; if it is off, the install says
 how to turn it on. `onefite-gui` also starts the GUI by hand, once the
 service is stopped (`sudo systemctl stop onefite-gui`): both use port 8143.
 
-On Windows, install Debian or Ubuntu in WSL (`wsl --install -d Debian` in
-PowerShell) and use these packages inside it.
+On Windows, the installer below does this for you; by hand, install Debian
+or Ubuntu in WSL (`wsl --install -d Debian` in PowerShell) and use these
+packages inside it.
 
 ## macOS (Homebrew)
 
@@ -65,6 +67,35 @@ then build the fitting engine on your Mac (Homebrew's `gcc` provides the
 Fortran compiler). Follow what `brew info fitteia/ofe/onefite-go` says
 about `OFE_PATH`, then check with `onefite doctor`. `brew upgrade` moves to
 the next suite release.
+
+## Windows
+
+Run `onefite-gui-setup-VERSION.exe`. Windows may warn that it is from an
+unknown publisher (the installer is not signed yet): **More info**, then
+**Run anyway**. The full install (the default) has:
+
+- **OFE-GUI and plot-go** on Windows, in the Start menu.
+- **The whole suite in WSL**, the part that fits:
+  - The installer turns WSL on if it is off; that may need one restart, and
+    the install then goes on at the next sign-in.
+  - It installs Debian if it is missing. Debian asks once for a user name and
+    password; `ofe` is a good name.
+  - It installs this release's OFE-Go and OFE-GUI packages there. They are
+    checked against `SHA256SUMS`, and OFE-Go builds the engine, which takes a
+    few minutes.
+  - A page asks for the GUI's settings, such as the embedded terminal (on by
+    default), the port and an Ollama model. It writes only what you change
+    there.
+
+Then open **OFE-GUI (WSL)** from the Start menu: it starts the GUI in Debian
+and opens <http://127.0.0.1:8143>. **Update the suite in WSL** installs the
+latest release there again. Uninstalling removes the Windows programs only;
+Debian and everything in it stay.
+
+The Windows OFE-GUI on its own (the "OFE-GUI and plot-go only" choice) has no
+engine. It fits on another machine: give that machine's GUI in the form's
+"Remote onefite-gui" field, for example `http://127.0.0.1:8143` for the one
+in WSL.
 
 ## The zips: OFE-GUI or plot-go on their own
 
@@ -107,14 +138,14 @@ keep their own licences; the NOTICE in each package has the details.
   [OneFit-Engine-ext-florence](https://github.com/fitteia/OneFit-Engine-ext-florence), public.
 - **OFE-Go and OFE-GUI: the complete source of every release published here
   is available on request.** Write to pj.sebastiao@gmail.com, naming the
-  release (for example `suite-0.5.13`).
+  release (for example `suite-0.5.14`).
 
 ## Making a release (maintainers)
 
 ```sh
-scripts/make-suite-release.sh suite-0.5.13 v0.5.13 v0.5.13 v1.2.1 1.1.2
-git add Formula && git commit -m "Formulas: suite-0.5.13" && git push origin main
-scripts/make-suite-release.sh --publish suite-0.5.13 v0.5.13 v0.5.13 v1.2.1 1.1.2
+scripts/make-suite-release.sh suite-0.5.14 v0.5.14 v0.5.14 v1.2.1 1.1.2
+git add Formula && git commit -m "Formulas: suite-0.5.14" && git push origin main
+scripts/make-suite-release.sh --publish suite-0.5.14 v0.5.14 v0.5.14 v1.2.1 1.1.2
 ```
 
 The arguments are the suite tag, then the OFE-Go, OFE-GUI, plot-go and

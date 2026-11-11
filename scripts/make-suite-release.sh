@@ -14,10 +14,12 @@
 #   from fitteia/OneFit-Engine-GUI  (private)
 #     onefite-go-gui_V_amd64.deb, onefite-go-gui_V_arm64.deb
 #     onefite-gui-V-OS-ARCH.zip (six), onefite-go-gui-V-darwin-ARCH.tar.gz (two)
+#     onefite-gui-setup-V.exe (the Windows installer, since v0.5.14)
 #   from fitteia/OneFit-Engine-plot (public)
 #     plot-go-V-OS-ARCH.zip (six)
 # checks every file against the SHA-256 digest GitHub records for its
-# release asset (and the zips also against their release's SHA256SUMS),
+# release asset (the zips also against their release's SHA256SUMS, the
+# installer against SHA256SUMS-setup.txt),
 # writes SHA256SUMS and the release notes, and sets Formula/*.rb to this
 # suite's archives (url, sha256, version). Commit and push Formula/, then
 # --publish creates the GitHub release SUITE here with its tag at that
@@ -43,7 +45,7 @@ sha256() { if command -v sha256sum >/dev/null; then sha256sum "$1"; else shasum 
 
 platforms="linux-amd64 linux-arm64 darwin-amd64 darwin-arm64 windows-amd64 windows-arm64"
 go_files="onefite-go_${go_v//-/\~}_amd64.deb onefite-go_${go_v//-/\~}_arm64.deb onefite-go-$go_v-darwin-arm64.tar.gz onefite-go-$go_v-darwin-amd64.tar.gz"
-gui_files="onefite-go-gui_${gui_v//-/\~}_amd64.deb onefite-go-gui_${gui_v//-/\~}_arm64.deb onefite-go-gui-$gui_v-darwin-arm64.tar.gz onefite-go-gui-$gui_v-darwin-amd64.tar.gz"
+gui_files="onefite-go-gui_${gui_v//-/\~}_amd64.deb onefite-go-gui_${gui_v//-/\~}_arm64.deb onefite-go-gui-$gui_v-darwin-arm64.tar.gz onefite-go-gui-$gui_v-darwin-amd64.tar.gz onefite-gui-setup-$gui_v.exe"
 plot_files=""
 for p in $platforms; do
   gui_files="$gui_files onefite-gui-$gui_v-$p.zip"
@@ -80,18 +82,22 @@ digests() {
   rm -f "$list"
   echo "    $repo $tag: GitHub asset digests match"
 }
-# verify REPO TAG FILE...: FILE against REPO's TAG release SHA256SUMS
+# verify [-s SUMSFILE] REPO TAG FILE...: FILE against REPO's TAG release
+# SHA256SUMS (or SUMSFILE, an asset of that release in the same format)
 verify() {
+  sumsname=SHA256SUMS
+  if [ "$1" = -s ]; then sumsname="$2"; shift 2; fi
   repo="$1" tag="$2"; shift 2
   sums="$(mktemp)"
-  gh release download "$tag" -R "$repo" -p SHA256SUMS -O "$sums" --clobber
+  gh release download "$tag" -R "$repo" -p "$sumsname" -O "$sums" --clobber
   for f in "$@"; do
-    want="$(awk -v f="$f" '$2 == f {print $1}' "$sums")"
-    [ -n "$want" ] || { echo "$f is not in $repo $tag's SHA256SUMS" >&2; rm -f "$sums"; exit 1; }
-    [ "$(sha256 "$stage/$f")" = "$want" ] || { echo "$f does not match $repo $tag's SHA256SUMS" >&2; rm -f "$sums"; exit 1; }
+    # (a sums file written on Windows ends its lines with CR LF)
+    want="$(awk -v f="$f" '{ sub(/\r$/, "") } $2 == f {print $1}' "$sums")"
+    [ -n "$want" ] || { echo "$f is not in $repo $tag's $sumsname" >&2; rm -f "$sums"; exit 1; }
+    [ "$(sha256 "$stage/$f")" = "$want" ] || { echo "$f does not match $repo $tag's $sumsname" >&2; rm -f "$sums"; exit 1; }
   done
   rm -f "$sums"
-  echo "    $repo $tag: SHA256SUMS match"
+  echo "    $repo $tag: $sumsname match"
 }
 
 echo "==> $suite in $stage"
@@ -109,6 +115,7 @@ digests "$gui_repo" "$gui_tag" $gui_files
 digests "$plot_repo" "$plot_tag" $plot_files
 # shellcheck disable=SC2086
 verify "$gui_repo" "$gui_tag" $(for p in $platforms; do echo "onefite-gui-$gui_v-$p.zip"; done)
+verify -s SHA256SUMS-setup.txt "$gui_repo" "$gui_tag" "onefite-gui-setup-$gui_v.exe"
 # shellcheck disable=SC2086
 verify "$plot_repo" "$plot_tag" $plot_files
 
