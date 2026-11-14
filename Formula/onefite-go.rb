@@ -11,11 +11,11 @@ class OnefiteGo < Formula
   license "Artistic-2.0"
 
   on_arm do
-    url "https://github.com/fitteia/OneFit-Engine-Releases/releases/download/suite-0.5.14/onefite-go-0.5.14-darwin-arm64.tar.gz"
+    url "https://github.com/fitteia/OneFit-Engine-Releases/releases/download/suite-0.5.15/onefite-go-0.5.14-darwin-arm64.tar.gz"
     sha256 "9d2af7ad9770983cedcb15be429e2000d647c73f24a2f2590fb987e24f56e780"
   end
   on_intel do
-    url "https://github.com/fitteia/OneFit-Engine-Releases/releases/download/suite-0.5.14/onefite-go-0.5.14-darwin-amd64.tar.gz"
+    url "https://github.com/fitteia/OneFit-Engine-Releases/releases/download/suite-0.5.15/onefite-go-0.5.14-darwin-amd64.tar.gz"
     sha256 "a2a9d79244b3d439dd3b91e4bb25e29b3457f076d6a0e84e415be2fb6d6477da"
   end
 
