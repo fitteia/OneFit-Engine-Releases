@@ -15,9 +15,11 @@ OFE-Raku, the reference engine, is installed from its own repository,
 [OneFit-Engine](https://github.com/fitteia/OneFit-Engine); each release
 names the OFE-Raku version it goes with.
 
-Suite 0.5.16 includes OFE-Go 0.5.15 and OFE-Raku 1.1.3, both selecting
-C v6.1.0 with the corrected Carver-Richards CPMG model. OFE-GUI remains
-0.5.15 and the standalone plot-go release remains 1.2.1.
+Suite 0.5.17 brings OFE-GUI 0.5.16: the fit report downloads as LaTeX too,
+a document that compiles with pdflatex, its plots as vector PDF and every
+table on its own to `\input` into a paper. OFE-Go 0.5.15 and OFE-Raku 1.1.3
+(C v6.1.0, with the corrected Carver-Richards CPMG model) and plot-go 1.2.1
+are unchanged.
 
 ## What each release holds
 
@@ -40,7 +42,7 @@ Download the two `.deb` files for your machine (`dpkg --print-architecture`
 says which), then:
 
 ```sh
-sudo apt install ./onefite-go_0.5.15_arm64.deb ./onefite-go-gui_0.5.15_arm64.deb
+sudo apt install ./onefite-go_0.5.15_arm64.deb ./onefite-go-gui_0.5.16_arm64.deb
 onefite doctor
 ```
 
@@ -142,14 +144,14 @@ keep their own licences; the NOTICE in each package has the details.
   [OneFit-Engine-ext-florence](https://github.com/fitteia/OneFit-Engine-ext-florence), public.
 - **OFE-Go and OFE-GUI: the complete source of every release published here
   is available on request.** Write to pj.sebastiao@gmail.com, naming the
-  release (for example `suite-0.5.16`).
+  release (for example `suite-0.5.17`).
 
 ## Making a release (maintainers)
 
 ```sh
-scripts/make-suite-release.sh suite-0.5.16 v0.5.15 v0.5.15 v1.2.1 1.1.3
-git add Formula && git commit -m "Formulas: suite-0.5.16" && git push origin main
-scripts/make-suite-release.sh --publish suite-0.5.16 v0.5.15 v0.5.15 v1.2.1 1.1.3
+scripts/make-suite-release.sh suite-0.5.17 v0.5.15 v0.5.16 v1.2.1 1.1.3
+git add Formula && git commit -m "Formulas: suite-0.5.17" && git push origin main
+scripts/make-suite-release.sh --publish suite-0.5.17 v0.5.15 v0.5.16 v1.2.1 1.1.3
 ```
 
 The arguments are the suite tag, then the OFE-Go, OFE-GUI, plot-go and
