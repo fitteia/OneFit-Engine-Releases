@@ -15,10 +15,11 @@ OFE-Raku, the reference engine, is installed from its own repository,
 [OneFit-Engine](https://github.com/fitteia/OneFit-Engine); each release
 names the OFE-Raku version it goes with.
 
-Suite 0.5.18 brings OFE-GUI 0.5.17: the embedded terminal stays dark in
-the light theme. It keeps OFE-GUI 0.5.16's LaTeX report download. OFE-Go
-0.5.15 and OFE-Raku 1.1.3 (C v6.1.0, with the corrected Carver-Richards CPMG
-model) and plot-go 1.2.1 are unchanged.
+Suite 0.6.0 brings OFE-Go 0.6.0 and OFE-GUI 0.6.0 with an updater: the GUI
+shows a card in its bottom-right corner when a newer suite is out, `sudo
+onefite update` installs it from the `.deb` packages, and on Windows the
+About box has **Update now** (see "Updating" below). OFE-Raku 1.1.3 (C
+v6.1.0) and plot-go 1.2.1 are unchanged.
 
 ## What each release holds
 
@@ -41,7 +42,7 @@ Download the two `.deb` files for your machine (`dpkg --print-architecture`
 says which), then:
 
 ```sh
-sudo apt install ./onefite-go_0.5.15_arm64.deb ./onefite-go-gui_0.5.17_arm64.deb
+sudo apt install ./onefite-go_0.6.0_arm64.deb ./onefite-go-gui_0.6.0_arm64.deb
 onefite doctor
 ```
 
@@ -102,6 +103,23 @@ engine. It fits on another machine: give that machine's GUI in the form's
 "Remote onefite-gui" field, for example `http://127.0.0.1:8143` for the one
 in WSL.
 
+## Updating
+
+From suite 0.6.0 on, OFE-GUI shows a card in its bottom-right corner when a
+newer suite is published here, with what to type:
+
+- Linux and WSL (the `.deb` packages): `sudo onefite update` (or `sudo
+  onefite-gui -update`). It installs the new OFE-Go and OFE-GUI packages
+  together, checked against `SHA256SUMS`, keeping your
+  `/etc/default/onefite-gui`.
+- Windows: **Update now** in OFE-GUI's About box (click the logo) runs the new
+  installer, which also updates the suite in WSL.
+- macOS: `brew update && brew upgrade onefite-go onefite-go-gui`.
+
+`onefite update --check` only says whether there is one. `--pre`
+(`-update-pre` for the GUI, or `OFE_UPDATE_CHANNEL=pre`) includes the
+pre-release suites.
+
 ## The zips: OFE-GUI or plot-go on their own
 
 Unzip, and put the program on your PATH. On macOS, a program downloaded
@@ -143,14 +161,14 @@ keep their own licences; the NOTICE in each package has the details.
   [OneFit-Engine-ext-florence](https://github.com/fitteia/OneFit-Engine-ext-florence), public.
 - **OFE-Go and OFE-GUI: the complete source of every release published here
   is available on request.** Write to pj.sebastiao@gmail.com, naming the
-  release (for example `suite-0.5.18`).
+  release (for example `suite-0.6.0`).
 
 ## Making a release (maintainers)
 
 ```sh
-scripts/make-suite-release.sh suite-0.5.18 v0.5.15 v0.5.17 v1.2.1 1.1.3
-git add Formula && git commit -m "Formulas: suite-0.5.18" && git push origin main
-scripts/make-suite-release.sh --publish suite-0.5.18 v0.5.15 v0.5.17 v1.2.1 1.1.3
+scripts/make-suite-release.sh suite-0.6.0 v0.6.0 v0.6.0 v1.2.1 1.1.3
+git add Formula && git commit -m "Formulas: suite-0.6.0" && git push origin main
+scripts/make-suite-release.sh --publish suite-0.6.0 v0.6.0 v0.6.0 v1.2.1 1.1.3
 ```
 
 The arguments are the suite tag, then the OFE-Go, OFE-GUI, plot-go and
@@ -161,3 +179,8 @@ checks every file against the digest GitHub records for it, writes
 archives. Once the formulas are committed and pushed, `--publish` creates
 the release with its tag at that commit, so the tag holds the suite's
 formulas.
+
+A pre-release suite (a tag with a `-`, such as `suite-0.6.0-pre1`, from
+component pre-release tags like `v0.6.0-pre1`) is published as a GitHub
+pre-release: it is never "latest", the formulas are not changed, and only
+`onefite update --pre` / `onefite-gui -update-pre` offer it.

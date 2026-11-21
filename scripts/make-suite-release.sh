@@ -6,6 +6,11 @@
 #
 #   e.g. scripts/make-suite-release.sh suite-0.4.0 v0.4.0 v0.4.0 v1.2.0 1.1.0
 #
+# A SUITE with a "-" (suite-0.6.0-pre1, from component pre-release tags such
+# as v0.6.0-pre1) is published as a GitHub pre-release: never "latest", and
+# the Homebrew formulas are left alone (brew users stay on the last final
+# suite). `onefite update --pre` / `onefite-gui -update-pre` offer it.
+#
 # It fetches into build/SUITE/ (a file already there is not fetched again,
 # but is still checked, so it must be the release asset itself):
 #   from fitteia/OneFit-Engine-go   (private: gh must be logged in with access)
@@ -33,6 +38,8 @@ if [ "${1:-}" = "--publish" ]; then publish=1; shift; fi
 [ $# -eq 5 ] || { sed -n '2,8p' "$0" | sed 's/^# \{0,1\}//' >&2; exit 2; }
 suite="$1" go_tag="$2" gui_tag="$3" plot_tag="$4" raku_version="${5#v}"
 go_v="${go_tag#v}" gui_v="${gui_tag#v}" plot_v="${plot_tag#v}"
+prerelease=""
+case "$suite" in *-*) prerelease=1 ;; esac
 here_repo=fitteia/OneFit-Engine-Releases
 go_repo=fitteia/OneFit-Engine-go
 gui_repo=fitteia/OneFit-Engine-GUI
@@ -44,8 +51,10 @@ mkdir -p "$stage"
 sha256() { if command -v sha256sum >/dev/null; then sha256sum "$1"; else shasum -a 256 "$1"; fi | awk '{print $1}'; }
 
 platforms="linux-amd64 linux-arm64 darwin-amd64 darwin-arm64 windows-amd64 windows-arm64"
-go_files="onefite-go_${go_v//-/\~}_amd64.deb onefite-go_${go_v//-/\~}_arm64.deb onefite-go-$go_v-darwin-arm64.tar.gz onefite-go-$go_v-darwin-amd64.tar.gz"
-gui_files="onefite-go-gui_${gui_v//-/\~}_amd64.deb onefite-go-gui_${gui_v//-/\~}_arm64.deb onefite-go-gui-$gui_v-darwin-arm64.tar.gz onefite-go-gui-$gui_v-darwin-amd64.tar.gz onefite-gui-setup-$gui_v.exe"
+# (a pre-release package is 0.6.0~pre1, but GitHub renames "~" to "." in
+# asset names: onefite-go_0.6.0.pre1_amd64.deb)
+go_files="onefite-go_${go_v//-/.}_amd64.deb onefite-go_${go_v//-/.}_arm64.deb onefite-go-$go_v-darwin-arm64.tar.gz onefite-go-$go_v-darwin-amd64.tar.gz"
+gui_files="onefite-go-gui_${gui_v//-/.}_amd64.deb onefite-go-gui_${gui_v//-/.}_arm64.deb onefite-go-gui-$gui_v-darwin-arm64.tar.gz onefite-go-gui-$gui_v-darwin-amd64.tar.gz onefite-gui-setup-$gui_v.exe"
 plot_files=""
 for p in $platforms; do
   gui_files="$gui_files onefite-gui-$gui_v-$p.zip"
@@ -128,7 +137,7 @@ art="https://raw.githubusercontent.com/$here_repo/main/assets"
 cat > "$stage/NOTES.md" <<EOF
 <p align="center"><picture><source media="(prefers-color-scheme: dark)" srcset="$art/social-preview-dark.png"><img src="$art/social-preview.png" alt="OneFit Engine: OFE-Raku, OFE-Go, OFE-GUI, plot-go" width="640"></picture></p>
 
-OneFit Engine suite **${suite#suite-}**:
+OneFit Engine suite **${suite#suite-}**${prerelease:+ (pre-release: for testing; Homebrew stays on the last final suite)}:
 
 | Component | Version | Source |
 | --- | --- | --- |
@@ -161,10 +170,18 @@ set_formula() {
   ' "$file"
   echo "    $file: $version"
 }
-set_formula Formula/onefite-go.rb onefite-go "$go_v"
-set_formula Formula/onefite-go-gui.rb onefite-go-gui "$gui_v"
+if [ -z "$prerelease" ]; then
+  set_formula Formula/onefite-go.rb onefite-go "$go_v"
+  set_formula Formula/onefite-go-gui.rb onefite-go-gui "$gui_v"
+else
+  echo "    pre-release: Formula/ left at the last final suite"
+fi
 
 echo "==> Ready: $(echo $all | wc -w | tr -d ' ') files, SHA256SUMS and NOTES.md in $stage"
+if [ -z "$publish" ] && [ -n "$prerelease" ]; then
+  echo "    Check them, then rerun with --publish (no formulas to commit for a pre-release)."
+  exit 0
+fi
 if [ -z "$publish" ]; then
   echo "    Check them, commit and push the formulas, then rerun with --publish:"
   echo "    git add Formula && git commit -m \"Formulas: $suite\" && git push origin main"
@@ -191,11 +208,18 @@ if gh release view "$suite" -R "$here_repo" >/dev/null 2>&1; then
   (cd "$stage" && gh release upload "$suite" $all SHA256SUMS --clobber -R "$here_repo")
   # an earlier, interrupted run may have left it a draft (untagged): publish
   # it here, at this commit (--target is ignored once the tag exists)
-  gh release edit "$suite" -R "$here_repo" --notes-file "$stage/NOTES.md" \
-    --target "$head" --draft=false --latest
+  if [ -n "$prerelease" ]; then
+    gh release edit "$suite" -R "$here_repo" --notes-file "$stage/NOTES.md" \
+      --target "$head" --draft=false --prerelease --latest=false
+  else
+    gh release edit "$suite" -R "$here_repo" --notes-file "$stage/NOTES.md" \
+      --target "$head" --draft=false --latest
+  fi
 else
+  # shellcheck disable=SC2046
   (cd "$stage" && gh release create "$suite" $all SHA256SUMS -R "$here_repo" \
-    --target "$head" --title "OneFit Engine suite ${suite#suite-}" --notes-file NOTES.md)
+    --target "$head" --title "OneFit Engine suite ${suite#suite-}" --notes-file NOTES.md \
+    $([ -n "$prerelease" ] && echo "--prerelease --latest=false"))
 fi
 tagged="$(gh api "repos/$here_repo/commits/$suite" --jq .sha)"
 if [ "$tagged" = "$head" ]; then
