@@ -6,16 +6,16 @@
 class OnefiteGoGui < Formula
   desc "Browser-based front end for OFE-Go"
   homepage "https://github.com/fitteia/OneFit-Engine-Releases"
-  version "0.6.1"
+  version "0.6.2"
   license "Artistic-2.0"
 
   on_arm do
-    url "https://github.com/fitteia/OneFit-Engine-Releases/releases/download/suite-0.6.1/onefite-go-gui-0.6.1-darwin-arm64.tar.gz"
-    sha256 "cecab0070e1190043f8dcefe143b403d3389154b23f5dcf730e6d1ab8b7aa9a2"
+    url "https://github.com/fitteia/OneFit-Engine-Releases/releases/download/suite-0.6.2/onefite-go-gui-0.6.2-darwin-arm64.tar.gz"
+    sha256 "70af884e04333fe427a2138cd89f4a47ea184bd83b606e9e4b16c1a3665cfbd8"
   end
   on_intel do
-    url "https://github.com/fitteia/OneFit-Engine-Releases/releases/download/suite-0.6.1/onefite-go-gui-0.6.1-darwin-amd64.tar.gz"
-    sha256 "009a3fb9210e3b4d307c2a7d39cebd2a25f7ed8595f747d0f864a4caa80f79a7"
+    url "https://github.com/fitteia/OneFit-Engine-Releases/releases/download/suite-0.6.2/onefite-go-gui-0.6.2-darwin-amd64.tar.gz"
+    sha256 "85c0459fcf8c8c67464bead7d2f6e06b0467337c980f81ae61afaca335403bad"
   end
 
   depends_on "fitteia/ofe/onefite-go"
