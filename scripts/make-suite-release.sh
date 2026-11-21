@@ -39,7 +39,7 @@ if [ "${1:-}" = "--publish" ]; then publish=1; shift; fi
 suite="$1" go_tag="$2" gui_tag="$3" plot_tag="$4" raku_version="${5#v}"
 go_v="${go_tag#v}" gui_v="${gui_tag#v}" plot_v="${plot_tag#v}"
 prerelease=""
-case "$suite" in *-*) prerelease=1 ;; esac
+case "${suite#suite-}" in *-*) prerelease=1 ;; esac
 here_repo=fitteia/OneFit-Engine-Releases
 go_repo=fitteia/OneFit-Engine-go
 gui_repo=fitteia/OneFit-Engine-GUI
