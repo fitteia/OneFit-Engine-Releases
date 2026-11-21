@@ -15,9 +15,10 @@ OFE-Raku, the reference engine, is installed from its own repository,
 [OneFit-Engine](https://github.com/fitteia/OneFit-Engine); each release
 names the OFE-Raku version it goes with.
 
-Suite 0.6.1 (OFE-Go and OFE-GUI 0.6.1) fixes the update command that suite
-0.6.0's updater shows for the `.deb` packages: it now names the program by
-its full path (see "Updating" below). Suite 0.6.0 brought the updater: the
+Suite 0.6.2 (OFE-Go and OFE-GUI 0.6.2): on Windows with the WSL part, the
+GUI in WSL now has **Update now** in its About box, running the Windows
+installer, which updates both parts. Suite 0.6.1 made the `.deb` update
+command name the program by its full path. Suite 0.6.0 brought the updater: the
 GUI shows a card in its bottom-right corner when a newer suite is out, the
 `.deb` packages update with one command, and on Windows the About box has
 **Update now**. OFE-Raku 1.1.3 (C v6.1.0) and plot-go 1.2.1 are unchanged.
@@ -43,7 +44,7 @@ Download the two `.deb` files for your machine (`dpkg --print-architecture`
 says which), then:
 
 ```sh
-sudo apt install ./onefite-go_0.6.1_arm64.deb ./onefite-go-gui_0.6.1_arm64.deb
+sudo apt install ./onefite-go_0.6.2_arm64.deb ./onefite-go-gui_0.6.2_arm64.deb
 onefite doctor
 ```
 
@@ -115,7 +116,8 @@ newer suite is published here, with what to type:
   together, checked against `SHA256SUMS`, keeping your
   `/etc/default/onefite-gui`.
 - Windows: **Update now** in OFE-GUI's About box (click the logo) runs the new
-  installer, which also updates the suite in WSL.
+  installer, which also updates the suite in WSL. From suite 0.6.2 on the
+  GUI in WSL (Start menu > **OFE-GUI (WSL)**) has it too.
 - macOS: `brew update && brew upgrade onefite-go onefite-go-gui`.
 
 `onefite update --check` only says whether there is one. `--pre`
@@ -163,14 +165,14 @@ keep their own licences; the NOTICE in each package has the details.
   [OneFit-Engine-ext-florence](https://github.com/fitteia/OneFit-Engine-ext-florence), public.
 - **OFE-Go and OFE-GUI: the complete source of every release published here
   is available on request.** Write to pj.sebastiao@gmail.com, naming the
-  release (for example `suite-0.6.1`).
+  release (for example `suite-0.6.2`).
 
 ## Making a release (maintainers)
 
 ```sh
-scripts/make-suite-release.sh suite-0.6.1 v0.6.1 v0.6.1 v1.2.1 1.1.3
-git add Formula && git commit -m "Formulas: suite-0.6.1" && git push origin main
-scripts/make-suite-release.sh --publish suite-0.6.1 v0.6.1 v0.6.1 v1.2.1 1.1.3
+scripts/make-suite-release.sh suite-0.6.2 v0.6.2 v0.6.2 v1.2.1 1.1.3
+git add Formula && git commit -m "Formulas: suite-0.6.2" && git push origin main
+scripts/make-suite-release.sh --publish suite-0.6.2 v0.6.2 v0.6.2 v1.2.1 1.1.3
 ```
 
 The arguments are the suite tag, then the OFE-Go, OFE-GUI, plot-go and
