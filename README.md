@@ -108,8 +108,9 @@ in WSL.
 From suite 0.6.0 on, OFE-GUI shows a card in its bottom-right corner when a
 newer suite is published here, with what to type:
 
-- Linux and WSL (the `.deb` packages): `sudo onefite update` (or `sudo
-  onefite-gui -update`). It installs the new OFE-Go and OFE-GUI packages
+- Linux and WSL (the `.deb` packages): `sudo /opt/onefite-go/bin/onefite
+  update` (or `sudo /opt/onefite-go/bin/onefite-gui -update`; the full path
+  because sudo's `PATH` may leave `/usr/local/bin` out). It installs the new OFE-Go and OFE-GUI packages
   together, checked against `SHA256SUMS`, keeping your
   `/etc/default/onefite-gui`.
 - Windows: **Update now** in OFE-GUI's About box (click the logo) runs the new
