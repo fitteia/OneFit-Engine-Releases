@@ -15,7 +15,12 @@ OFE-Raku, the reference engine, is installed from its own repository,
 [OneFit-Engine](https://github.com/fitteia/OneFit-Engine); each release
 names the OFE-Raku version it goes with.
 
-Suite 0.6.3 (OFE-GUI 0.6.3, OFE-Go 0.6.2 unchanged) makes starting and
+Suite 0.6.4 (OFE-Go 0.6.4, OFE-Raku 1.1.4, OFE-GUI 0.6.3 unchanged): a saved
+fit records each data block's MINUIT status (`fit-status`: whether MIGRAD
+converged, the error matrix, MINOS), read from the engine's own work logs, so
+programs such as OneNMRD can show it without reaching those files; fitted
+numbers, fit methods and exit codes are unchanged. OFE-Go also saves parameter
+limits as written (`1e-5`, not `1e-05`), as OFE-Raku does. Suite 0.6.3 made starting and
 updating safe on Windows: **OFE-GUI (WSL)** says in a message why it cannot
 start (no WSL, no Debian, systemd off, ...) instead of doing nothing;
 **Update now** asks first, follows the update, starts OFE-GUI again and
@@ -49,7 +54,7 @@ Download the two `.deb` files for your machine (`dpkg --print-architecture`
 says which), then:
 
 ```sh
-sudo apt install ./onefite-go_0.6.2_arm64.deb ./onefite-go-gui_0.6.3_arm64.deb
+sudo apt install ./onefite-go_0.6.4_arm64.deb ./onefite-go-gui_0.6.3_arm64.deb
 onefite doctor
 ```
 
@@ -170,14 +175,14 @@ keep their own licences; the NOTICE in each package has the details.
   [OneFit-Engine-ext-florence](https://github.com/fitteia/OneFit-Engine-ext-florence), public.
 - **OFE-Go and OFE-GUI: the complete source of every release published here
   is available on request.** Write to pj.sebastiao@gmail.com, naming the
-  release (for example `suite-0.6.3`).
+  release (for example `suite-0.6.4`).
 
 ## Making a release (maintainers)
 
 ```sh
-scripts/make-suite-release.sh suite-0.6.3 v0.6.2 v0.6.3 v1.2.1 1.1.3
-git add Formula && git commit -m "Formulas: suite-0.6.3" && git push origin main
-scripts/make-suite-release.sh --publish suite-0.6.3 v0.6.2 v0.6.3 v1.2.1 1.1.3
+scripts/make-suite-release.sh suite-0.6.4 v0.6.4 v0.6.3 v1.2.1 1.1.4
+git add Formula && git commit -m "Formulas: suite-0.6.4" && git push origin main
+scripts/make-suite-release.sh --publish suite-0.6.4 v0.6.4 v0.6.3 v1.2.1 1.1.4
 ```
 
 The arguments are the suite tag, then the OFE-Go, OFE-GUI, plot-go and
