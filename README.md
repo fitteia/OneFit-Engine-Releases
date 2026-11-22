@@ -193,3 +193,10 @@ A pre-release suite (a tag with a `-`, such as `suite-0.6.0-pre1`, from
 component pre-release tags like `v0.6.0-pre1`) is published as a GitHub
 pre-release: it is never "latest", the formulas are not changed, and only
 `onefite update --pre` / `onefite-gui -update-pre` offer it.
+
+Release tag and publication safeguards can be checked without network access
+or publishing using core Perl and Git:
+
+```sh
+prove -v scripts/test-release.t
+```
