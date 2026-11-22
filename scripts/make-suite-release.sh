@@ -202,6 +202,9 @@ head="$(git rev-parse HEAD)"
   exit 1
 }
 
+source scripts/check-release-tag.sh
+check_release_tag origin "$suite" "$head" allow-missing
+
 echo "==> Publishing $suite on $here_repo at $head"
 # shellcheck disable=SC2086
 if gh release view "$suite" -R "$here_repo" >/dev/null 2>&1; then
@@ -225,5 +228,6 @@ tagged="$(gh api "repos/$here_repo/commits/$suite" --jq .sha)"
 if [ "$tagged" = "$head" ]; then
   echo "==> Published; tag $suite = $head (with these formulas)."
 else
-  echo "==> Published, but tag $suite is $tagged, not $head: move it to the formula commit." >&2
+  echo "==> Verification failed: tag $suite is $tagged, expected $head. Preserve the published tag and investigate." >&2
+  exit 1
 fi
